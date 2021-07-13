@@ -1,0 +1,161 @@
+
+public class Quadratic 
+{
+
+	private int a;
+	private int b;
+	private int c;
+	private String firstSign;
+	private String lastSign;
+
+	public static void main(String[] args)
+	{
+		Quadratic x = new Quadratic("1x^2 - 7x - 18");
+		x.factor();
+	}
+
+	public Quadratic(String standardForm)
+	{
+		String a,b,c;
+		a = (standardForm.substring(0, standardForm.indexOf("x^2")));
+		b = (standardForm.substring(standardForm.indexOf("x^2") + 6, standardForm.indexOf("x", standardForm.indexOf("x") + 1)));
+		c = (standardForm.substring(standardForm.lastIndexOf(" ") + 1));
+		firstSign = (standardForm.substring(standardForm.indexOf("x^2") + 4, standardForm.indexOf("x^2") + 5));
+		lastSign = standardForm.substring(standardForm.indexOf(" ", standardForm.lastIndexOf("x"))+1, standardForm.indexOf(" ", standardForm.lastIndexOf("x"))+2);
+		this.a = Integer.parseInt(a);
+		this.b = Integer.parseInt(firstSign+b);
+		this.c = Integer.parseInt(lastSign+c);
+		
+	}
+
+	public int getA()
+	{
+		return a;
+	}
+
+	public int getB()
+	{
+		return b;
+	}
+
+	public int getC()
+	{
+		return c;
+	}
+
+	private void diffOfSquares(Quadratic sub)
+	{
+		int lowest = 0;
+		int commonFactor = 0;
+
+		if(a < c)
+		{
+			lowest = a;
+		}
+		else
+		{
+			lowest = c;
+		}
+		System.out.println(lowest+"H");
+		for(int i = 1; i <= lowest; i++)
+		{
+			if(a % i == 0 && c % i == 0)
+			{
+				
+				commonFactor = i;
+				//System.out.println(sub.getA() + " " + sub.getB() + " " + sub.getC());
+			}
+		}
+		sub = new Quadratic((a/commonFactor)+"x^2 + "+ (b/commonFactor)+"x"+ " + " + (c/commonFactor));
+		if(Math.sqrt(sub.getC()) % 1 == 0)
+		{
+			System.out.print((this.getA()/sub.getA()));
+			System.out.print("("+(int)Math.sqrt(sub.getA()) + "x " + "+" + " " + (int)Math.sqrt(sub.getC())+")");
+			System.out.println("("+(int)Math.sqrt(sub.getA()) + "x " + "-" + " " + (int)Math.sqrt(sub.getC())+")");
+			
+
+		}
+	}
+
+	public void factor()
+	{
+		Quadratic sub = null;
+		int lowest = 0;
+		boolean isReduced = false;
+
+		//Finds lowest coefficient that acts as limit for finding common factor
+		if(a < b && a < c)
+		{
+			lowest = a;
+		}
+		if(b < a && a < c)
+		{
+			lowest = b;
+		}
+		if(c < a && c < b)
+		{
+			lowest = c;
+		}
+		//difference of squares
+		if(b == 0 && lastSign.equals("-"))
+		{
+			diffOfSquares(new Quadratic(a+"x^2 + "+ b+"x"+ " + " + c));
+		}
+		else
+		{
+			for(int i = 1; i <= lowest; i++)
+			{
+				if(a % i == 0 && b % i == 0 && c % i == 0)
+				{
+					sub = new Quadratic((a/i)+"x^2 + "+ (b/i)+"x"+ " + " + (c/i));
+
+					isReduced = true;
+				}
+			}
+			//Not reduced
+			if(!isReduced)
+			{
+				System.out.println(a + " " + b + " " + c);
+				System.out.println(a+"x^2 " + b+"x"+ " "+  c);
+				sub = new Quadratic(a+"x^2 " + b+"x"+ " "+  c);
+			}
+			
+			
+			//Perfect Square
+			if (2 * ((int)Math.sqrt(sub.getA())) * ((int)Math.sqrt(sub.getC())) == sub.getB())
+			{
+				System.out.println("(" + ((int)Math.sqrt(sub.getA())) + "x " + firstSign + " " + (int)(Math.sqrt(sub.getC())) + ")^2");
+			}
+			
+			//Quadratic formula
+			else
+			{
+				double x1, x2;
+				int discriminant = 0;
+				discriminant = ((int)Math.pow(sub.getB(), 2)) - (4 * sub.getA() * sub.getC());
+				if(discriminant < 0)
+				{
+					System.out.println("No real roots!");
+				}
+				else if(discriminant == 0)
+				{
+					//Test to make sure perfect squares are done before entering this block
+					System.out.println("(" + ((int)Math.sqrt(sub.getA())) + "x " + firstSign + " " + (int)(Math.sqrt(sub.getC())) + ")^2");
+				}
+				else
+				{
+						x1 = ((-sub.getB()) + Math.sqrt(discriminant))/(2*sub.getA());
+						x2 = ((-sub.getB()) - Math.sqrt(discriminant))/(2*sub.getA());
+						System.out.println("Roots are: " + x1 + " & " + x2);
+						//Signs not right here (work on)
+						System.out.println("Factored form: " + (this.a / sub.getA()) + "(" + sub.getA() + "x " + x1 + ")" + "(" + sub.getA() + "x " + x2 + ")");
+				}
+			
+			}
+			
+		
+		}
+
+
+	}
+}
